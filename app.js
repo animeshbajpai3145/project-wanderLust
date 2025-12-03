@@ -117,7 +117,7 @@ app.get("/listings/new",(req,res)=>{
 // show route --------------------------
 app.get("/listings/:id", async(req,res)=>{
    let userId = req.params.id;
-   let listing =  await Listing.findById(userId);
+   let listing =  await Listing.findById(userId).populate("reviews");
   res.render("listings/show.ejs",{listing});
 });
 
