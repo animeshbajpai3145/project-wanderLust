@@ -42,16 +42,6 @@ let {error} =listingSchema.validate(req.body);
 };
 
 
-const validateReview=(req,res,next)=>{
-let {error} =reviewSchema.validate(req.body);
-
- if(error){
-   let errorMsg = error.details.map((el)=> el.message).join(",");
-   throw new ExpressError(400,errorMsg);
- }else{
-   next();
- }
-};
 
 
 
@@ -72,15 +62,27 @@ app.put("/listings/:id",validateLisiting,wrapAsync(async (req,res)=>{
   await  Listing.findByIdAndUpdate(id,{...req.body.listing});
    res.redirect(`/listings/${id}`);
 }));
-/// delte route ------------
+/// delete route 
 app.delete("/listings/:id",async (req,res)=>{
 let {id}=req.params;
 await Listing.findByIdAndDelete(id);
 res.redirect("/listings");
 });
 
-// Reviews 
-// Post Route
+//--------------------- Reviews-------------
+// Server side validation function 
+const validateReview=(req,res,next)=>{
+let {error} =reviewSchema.validate(req.body);
+
+ if(error){
+   let errorMsg = error.details.map((el)=> el.message).join(",");
+   throw new ExpressError(400,errorMsg);
+ }else{
+   next();
+ }
+};
+
+// Post review Route
 
 app.post("/listings/:id/reviews",validateReview ,wrapAsync(async(req,res)=>{
   let listing = await Listing.findById(req.params.id)
@@ -90,9 +92,19 @@ app.post("/listings/:id/reviews",validateReview ,wrapAsync(async(req,res)=>{
      await newReview.save();
      await listing.save();
      console.log("new Review saved");
-     res.send("new review saved");
-     res.redirect(`lisitngs/${listing._id}`);
+     
+     res.redirect(`/listings/${listing._id}`);
 }));
+
+
+// Delete a review
+app.delete("/listings/:id/reviews/:reviewId",wrapAsync(async (req,res)=>{
+let {id,reviewId}= req.params;
+await Listing.findByIdAndUpdate(id,{$pull:{reviews:reviewId}});
+await Review.findByIdAndDelete(reviewId);
+res.redirect(`/listings/${id}`);
+}));
+//-----------------------------------------------
 // create route ----------
 app.post("/listings",validateLisiting, wrapAsync( async (req,res,next)=>{
   
