@@ -1,1 +1,2 @@
-Simple website made using html ,css , javascript, bootstrap, Express, Mongodb
+Simple website made using  tech stack html ,css , javascript, bootstrap, Express, Mongodb
+

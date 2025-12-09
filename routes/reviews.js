@@ -6,6 +6,11 @@ const { reviewSchema} = require('../schema.js');
 const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing.js");
 
+// extra
+const ejsMate= require("ejs-mate");
+const mongoose  = require("mongoose");
+// remove later
+
 
 const validateReview=(req,res,next)=>{
 let {error} =reviewSchema.validate(req.body);
