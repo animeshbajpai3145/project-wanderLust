@@ -10,6 +10,12 @@ const reviews = require("./routes/reviews.js");
 const Mongo_Url = "mongodb://127.0.0.1:27017/wanderlust";
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport  = require("passport");
+const localStrategy = require("passport-local");
+const User = require('./models/user.js');
+const passport =require("passport");
+const local = require('passport-local');
+
 
 app.use(methodOverride("_method"));
 app.set("views",path.join(__dirname,"views"));
