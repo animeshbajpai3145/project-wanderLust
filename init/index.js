@@ -14,6 +14,9 @@ const Mongo_Url = "mongodb://127.0.0.1:27017/wanderlust";
  }
  const initDB = async ()=>{
    await listing.deleteMany({});
+   initData.data = initData.data.map((obj)=>({
+    ...obj, owner:'694928701b9f2ed4f8b989af'
+   }));
    await listing.insertMany(initData.data);
    console.log("data was initialised");
  }
