@@ -8,6 +8,7 @@ const{validateReview,isLoggedIn,isAuthor}  = require("../middleware.js");
 // extra
 const ejsMate= require("ejs-mate");
 const mongoose  = require("mongoose");
+const  reviewController = require(" ")
 // remove later
 
 
@@ -16,21 +17,9 @@ const mongoose  = require("mongoose");
 
 
 
-// add a review
-router.post("/",isLoggedIn,validateReview ,wrapAsync(async(req,res)=>{
-  let listing = await Listing.findById(req.params.id)
-  let newReview = new Review(
-     req.body.review );
-     newReview.author= req.user._id;
-     listing.reviews.push(newReview);
-     await newReview.save();
-     await listing.save();
-     console.log("new Review saved");
-     req.flash("success" ,"New Review Created!");
 
-     
-     res.redirect(`/listings/${listing._id}`);
-}));
+// add a review
+router.post("/",isLoggedIn,validateReview ,wrapAsync());
 
 
 // Delete a review
