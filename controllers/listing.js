@@ -11,9 +11,14 @@ module.exports.renderNewForm = (req, res) => {
 
    res.render("listings/new.ejs");
 }
-module.exports.createNewListing = async (req, res, next) => {
-
+ module.exports.createNewListing = async (req, res, next) => {
    console.log(req.body.listing);
+
+   // Clean image URL: treat empty string as undefined
+   if (req.body.listing.image?.url?.trim() === "") {
+      req.body.listing.image.url = undefined;
+   }
+
    const newListing = new Listing(req.body.listing);
    newListing.owner = req.user;
    await newListing.save();
@@ -48,12 +53,17 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateListing = async (req, res) => {
    if (!req.body.listing) {
-      throw new ExpressError(400, "send valid data for listing ")
+      throw new ExpressError(400, "Send valid data for listing");
    }
-   let { id } = req.params;
-   await Listing.findByIdAndUpdate(id, { ...req.body.listing });
-   req.flash("success", "Listing updated!");
 
+
+   if (req.body.listing.image?.url?.trim() === "") {
+      req.body.listing.image.url = undefined;
+   }
+
+   let { id } = req.params;
+   await Listing.findByIdAndUpdate(id, { ...req.body.listing }, { runValidators: true });
+   req.flash("success", "Listing updated!");
    res.redirect(`/listings/${id}`);
 };
 module.exports.destroyListing = async (req, res) => {
