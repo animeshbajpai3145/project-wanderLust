@@ -12,15 +12,14 @@ module.exports.renderNewForm = (req, res) => {
    res.render("listings/new.ejs");
 }
  module.exports.createNewListing = async (req, res, next) => {
-   console.log(req.body.listing);
-
-   // Clean image URL: treat empty string as undefined
-   if (req.body.listing.image?.url?.trim() === "") {
-      req.body.listing.image.url = undefined;
-   }
+let url = req.file.path;
+let filename = req.file.filename;
+console.log(url,"..",filename);
+ 
 
    const newListing = new Listing(req.body.listing);
    newListing.owner = req.user;
+   newListing.image = {url,filename};
    await newListing.save();
    req.flash("success", "New Listing Created");
    res.redirect("/listings");
