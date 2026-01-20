@@ -13,7 +13,7 @@ const ExpressError = require("./utils/ExpressError.js");
 const listingRouter= require("./routes/listing.js");
 const reviewRouter= require("./routes/reviews.js");
 const userRouter = require("./routes/user.js");
-// const Mongo_Url = "mongodb://127.0.0.1:27017/wanderlust";
+
 const dbUrl =process.env.ATLASDB_URL;
 const session = require('express-session');
 const MongoStore = require('connect-mongo').default;
@@ -42,7 +42,7 @@ store.on("error",()=>{
 });
  const sessionOptions = {
    store:store,
-   secret:"mysupersecretcode",resave:false,saveUninitialized:true,
+   secret:process.env.SECRET,resave:false,saveUninitialized:true,
    cookie:{
       expires:Date.now() + 7 *24*60*60*1000 ,// cookie expires after a week 
       maxAge: 7*24*60*60*1000,
@@ -51,9 +51,6 @@ store.on("error",()=>{
  };
  
 
- app.get("/",(req,res)=>{
-  res.redirect("/listings");
-}); 
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -80,6 +77,9 @@ app.use("/listings", listingRouter);
 app.use('/listings/:id/reviews',reviewRouter);
 app.use('/',userRouter);
 
+app.get("/",(req,res)=>{
+   res.redirect("/listings");
+});
 
 main().then(()=>{
    console.log("connected to db successfully ");
